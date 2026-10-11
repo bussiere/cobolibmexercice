@@ -9,8 +9,8 @@ IMAGE="localhost/gnucobol85:latest"
 POD="cobol85-pod"
 
 if [[ "${1:-}" == "--clean" ]]; then
-    podman pod rm -f "$POD" 2>/dev/null || true
-    podman rmi -f "$IMAGE" 2>/dev/null || true
+    podman pod rm -f "$POD" >/dev/null 2>&1 || true
+    podman rmi -f "$IMAGE" >/dev/null 2>&1 || true
     echo "Pod $POD et image $IMAGE supprimes."
     exit 0
 fi

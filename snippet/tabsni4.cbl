@@ -1,0 +1,27 @@
+      * SNIPPET FOR UNDERSTANDING TABLE IN COBOL
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TABLE-TEST1.
+       
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+
+       01 NUMBER-VALUES.
+        05 FILLER PIC X(05) VALUE "One ".
+        05 FILLER PIC X(05) VALUE "Two ".
+        05 FILLER PIC X(05) VALUE "Three".
+        05 FILLER PIC X(05) VALUE "Four ".
+        05 FILLER PIC X(05) VALUE "Five ".
+
+       01 NUMBER-TABLES REDEFINES NUMBER-VALUES.
+           05 WS-NUMBER PIC X(05) OCCURS 5 TIMES.
+
+       PROCEDURE DIVISION.
+       MAIN-PROCEDURE.
+
+
+      *> Affichage pour vérifier le résultat
+           DISPLAY WS-NUMBER(3).
+           INITIALIZE NUMBER-TABLES REPLACING ALPHANUMERIC DATA 
+           BY "XXXXX".
+           DISPLAY WS-NUMBER(3).
+           STOP RUN.
