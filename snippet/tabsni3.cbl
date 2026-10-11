@@ -1,0 +1,28 @@
+      * SNIPPET FOR UNDERSTANDING TABLE IN COBOL 3
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TABLE-TEST2.
+
+       
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 TABLE-2D.
+           05 TABLE-ROW OCCURS 2 TIMES INDEXED BY INX-A.
+              10 TABLE-COL OCCURS 5 TIMES INDEXED BY INX-B PIC X(4).
+
+       PROCEDURE DIVISION.
+       MAIN-PROCEDURE.
+
+           MOVE "ABCD" TO TABLE-COL (1, 2).
+           DISPLAY TABLE-COL (1, 2).
+           MOVE "DEFG" TO TABLE-COL (1, 3).
+      * PRINT "DEFG"
+           DISPLAY TABLE-COL (1, 3).
+      * DATA IN TABLE-2D 
+      * 1:2:3:4;5:6:7:8;9:10:11:12
+      * DONC 9:10:11:12
+           MOVE "WXYZ" TO TABLE-2D (9 : 4).
+      * PRINT "WXYZ"
+           DISPLAY TABLE-2D (9 : 4).
+      * PRINT "DEFG"
+           DISPLAY TABLE-COL (1, 3).
+           STOP RUN.
