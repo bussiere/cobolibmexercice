@@ -1,0 +1,42 @@
+      * SNIPPET FOR UNDERSTANDING TABLE IN COBOL
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TABLE-TEST6.
+       
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+      * HERE WE ARE PRE FILL THE TAB
+      * FIRST FILL THE FIRST TABLE
+      * THEN FILL THE SECOND
+      * WILL PROVOKE A WARNING
+       01 TABLE-TWO VALUE "12345678901234".
+           05 TABLE-TWO-DATA OCCURS 4 TIMES PIC X(2).
+           05 TABLE-TWO-DATA-BIS OCCURS 4 TIMES PIC X.
+
+      * FILL THE TABLE BY 2 PAIR
+       01 TABLE-THREE VALUE "12345678".
+           05 TABLE-THREE-DATA OCCURS 4 TIMES PIC X(2).
+         
+
+      * FILL THE TABLE BY 1 VALUE
+       01 TABLE-FOUR VALUE "1234".
+           05 TABLE-FOUR-DATA OCCURS 4 TIMES PIC X.
+
+
+       PROCEDURE DIVISION.
+       MAIN-PROCEDURE.
+      * WARNING CANT MAKE A "" DISPLAY
+           DISPLAY "===TABLE TWO===".
+           DISPLAY TABLE-TWO-DATA(3).
+           DISPLAY TABLE-TWO-DATA-BIS(3).
+           DISPLAY "===============".
+           DISPLAY " ".
+           DISPLAY "===TABLE THREE===".
+           DISPLAY TABLE-THREE-DATA(3).
+           DISPLAY "===============".
+           DISPLAY " ".
+           DISPLAY "===TABLE FOUR===".
+           DISPLAY TABLE-FOUR-DATA(3).
+           DISPLAY "===============".
+           DISPLAY " ".
+
+
