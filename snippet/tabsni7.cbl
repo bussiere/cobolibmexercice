@@ -1,0 +1,28 @@
+      * SNIPPET FOR UNDERSTANDING TABLE IN COBOL
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TABLE-TEST7.
+       
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+      * OCCURS DEPENDING ON
+       01 MAIN-AREA.
+           03 REC-1.
+              05 FIELD-1 PIC 9.
+              05 FIELD-2 OCCURS 1 TO 5 TIMES DEPENDING ON FIELD-1
+              PIC X(05).
+       
+       01 REC-2.
+           03 REC-2-DATA PIC X(50).
+
+
+       PROCEDURE DIVISION.
+       MAIN-PROCEDURE.
+      * 
+           MOVE 2 TO FIELD-1.
+           MOVE "ABCDE" TO FIELD-2(2).
+           DISPLAY FIELD-1.
+           DISPLAY FIELD-2(2).
+      * DECOMMENTER POUR FAIRE MERDER LE TABLEAU
+           MOVE "ABCDE" TO FIELD-2(3).
+           DISPLAY FIELD-2(3).
+           STOP RUN.
