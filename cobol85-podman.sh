@@ -54,6 +54,6 @@ run_in_pod() {
 
 # -std=cobol85 : dialecte COBOL 85 (inclut l'amendement 1989)
 # -x : executable ; -fixed : format fixe colonnes 8-72 ; -Wall : avertissements
-run_in_pod cobc -x -std=cobol85 -fixed -Wall -o "build/$exe_name" "$src_name"
+run_in_pod cobc -x -fstack-check -std=cobol85 -fixed -Wall -o "build/$exe_name" "$src_name"
 echo "=== Execution de $exe_name (pod $POD) ==="
 run_in_pod "./build/$exe_name" "$@"
