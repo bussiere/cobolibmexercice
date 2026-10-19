@@ -1,5 +1,6 @@
       * SNIPPET FOR UNDERSTANDING TABLE IN COBOL
       * BINARY SEARCH IN COBOL
+      * COMPRENDRE LE TRI DE TABLEAU
        IDENTIFICATION DIVISION.
        PROGRAM-ID. TABLE-TEST8.
 
@@ -9,20 +10,24 @@
       * DE DONNEES QUI SONT DES ELEMENTS INDEPENDANTS 
        77 PEOPLE-SEARCH-DATA     PIC X(20).
        01 PEOPLE-SERIAL.
-           05 PEOPLE-NAME OCCURS 50 TIMES
+           05 PEOPLE-NAME PIC X(20) OCCURS 50 TIMES
            ASCENDING KEY IS PEOPLE-NAME
-           INDEXED BY PL-IDX PIC X(20).
+           INDEXED BY PL-IDX .
+           05 PL-FLAG        PIC X(01).
+              88 SEARCH-DONE     VALUE 'O'.
+              88 SEARCH-NDONE    VALUE 'N'.
 
       * Variables de travail pour le tri
        01  WS-VARIABLES-TRI.
            05 WS-TEMP-NOM         PIC X(30).
-           05 WS-MAX-ELEMENTS     PIC 9(02) VALUE 10.
+           05 WS-MAX-ELEMENTS     PIC 9(02) VALUE 50.
            05 WS-I                PIC 9(02).
            05 WS-J                PIC 9(02).
            05 WS-J-PLUS-1         PIC 9(02).
            05 WS-SWAP-FLAG        PIC X(01).
               88 TABLEAU-TRIE     VALUE 'O'.
               88 PAS-ENCORE-TRIE  VALUE 'N'.
+
          
        PROCEDURE DIVISION.
       * MOVE EST INUTILE NOUS ALLON TRIER LES DONNEES
@@ -32,6 +37,8 @@
       * MOVE POUR LES DONNEES
            MOVE "TITI" TO PEOPLE-NAME(1).
            MOVE "TOTO" TO PEOPLE-NAME(2).
+           MOVE "TOTO" TO PEOPLE-NAME(3).
+           MOVE "TATA" TO PEOPLE-NAME(4).
            MOVE  "TOTO" TO PEOPLE-SEARCH-DATA.
       * ON APPEL ICI L OPERATION DE TRIAGE DE TABLEAU
            PERFORM TRIER-TABLEAU.
@@ -47,7 +54,7 @@
            DISPLAY  PEOPLE-NAME(PL-IDX).
            STOP RUN.
 
-         TRIER-TABLEAU.
+        TRIER-TABLEAU.
            PERFORM VARYING WS-I FROM 1 BY 1 
                    UNTIL WS-I > WS-MAX-ELEMENTS - 1
                
