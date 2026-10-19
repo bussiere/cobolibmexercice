@@ -25,6 +25,7 @@
            05 WS-J                PIC 9(02).
            05 WS-J-PLUS-1         PIC 9(02).
            05 WS-SWAP-FLAG        PIC X(01).
+      * METTRE UN RAPPEL DE 88
               88 TABLEAU-TRIE     VALUE 'O'.
               88 PAS-ENCORE-TRIE  VALUE 'N'.
 
@@ -39,7 +40,7 @@
            MOVE "TOTO" TO PEOPLE-NAME(2).
            MOVE "TOTO" TO PEOPLE-NAME(3).
            MOVE "TATA" TO PEOPLE-NAME(4).
-           MOVE  "TOTO" TO PEOPLE-SEARCH-DATA.
+           MOVE "TOTO" TO PEOPLE-SEARCH-DATA.
       * ON APPEL ICI L OPERATION DE TRIAGE DE TABLEAU
            PERFORM TRIER-TABLEAU.
 
@@ -57,7 +58,7 @@
         TRIER-TABLEAU.
            PERFORM VARYING WS-I FROM 1 BY 1 
                    UNTIL WS-I > WS-MAX-ELEMENTS - 1
-               
+      * QU EST CE QUE L ON PEUT PASSER EN BOOLEAN          
                SET TABLEAU-TRIE TO TRUE
                
                PERFORM VARYING WS-J FROM 1 BY 1 
