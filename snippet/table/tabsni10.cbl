@@ -47,7 +47,7 @@
            DISPLAY  PEOPLE-NAME(PL-IDX).
            STOP RUN.
 
-         TRIER-TABLEAU.
+       TRIER-TABLEAU.
            PERFORM VARYING WS-I FROM 1 BY 1 
                    UNTIL WS-I > WS-MAX-ELEMENTS - 1
                
