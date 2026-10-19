@@ -30,3 +30,4 @@
            DISPLAY PEOPLE-SEARCH-DATA
            DISPLAY  PEOPLE-NAME(PL-IDX).
 
+           STOP RUN.

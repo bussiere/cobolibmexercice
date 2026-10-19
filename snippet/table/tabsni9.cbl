@@ -48,10 +48,10 @@
       *    LA TABLE. FAIT APRES, IL ECRASE "TITI" ET "TOTO" (TOUTE LA
       *    TABLE DEVIENT HIGH-VALUES) => NOT FOUND.
       * ---------------------------------------------------------------
-      *    MOVE HIGH-VALUES TO PEOPLE-SERIAL.
+           MOVE HIGH-VALUES TO PEOPLE-SERIAL.
       * MOVE POUR LES DONNEES
-           MOVE "TITI" TO PEOPLE-NAME(49).
-           MOVE "TOTO" TO PEOPLE-NAME(50).
+           MOVE "TITI" TO PEOPLE-NAME(2).
+           MOVE "TOTO" TO PEOPLE-NAME(3).
            MOVE  "TOTO" TO PEOPLE-SEARCH-DATA.
            SEARCH ALL PEOPLE-NAME
            AT END DISPLAY "Not found"
