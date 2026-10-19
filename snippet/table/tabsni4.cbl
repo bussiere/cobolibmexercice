@@ -19,7 +19,7 @@
        MAIN-PROCEDURE.
 
 
-      *> Affichage pour vérifier le résultat
+      *> Affichage pour verifier le résultat
            DISPLAY WS-NUMBER(3).
            INITIALIZE NUMBER-TABLES REPLACING ALPHANUMERIC DATA 
            BY "XXXXX".

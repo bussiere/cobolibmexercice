@@ -18,11 +18,11 @@
           05 FILLER PIC X(05) VALUE "Ten  ".
 
        01 NUMBER-TABLES REDEFINES NUMBER-VALUES.
-      * On crée un groupe pour le premier tableau
+      * CREATION DU GROUPE POUR LE PREMIER TABLEAU
           05 GROUP-NUMBER-1.
              10 WS-NUMBER-1 PIC X(05) OCCURS 5 TIMES.
           
-      * On crée un groupe pour le deuxième tableau
+      * CREATION DU GROUPE POUR LE DEUXIEME TABLEAU
           05 GROUP-NUMBER-2.
              10 WS-NUMBER-2 PIC X(05) OCCURS 5 TIMES.
 
