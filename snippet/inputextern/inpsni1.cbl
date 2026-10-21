@@ -1,3 +1,5 @@
+      * SNIPPET FOR UNDERSTANDING INPUT DATA / FILE IN COBOL
+
        IDENTIFICATION DIVISION.
        PROGRAM-ID. TRAVELLER-SHEET.
        AUTHOR. BUSSIERE.
@@ -5,9 +7,13 @@
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           SELECT CHAR-FILE ASSIGN TO "char_input.txt"
+           SELECT CHAR-FILE ASSIGN TO "char_input1.txt"
+      * Lecture ligne par ligne du fichier
            ORGANIZATION IS LINE SEQUENTIAL
+      * Lecture du debut a la fin
            ACCESS MODE IS SEQUENTIAL
+      * Demande au système d'exploitation de renvoyer 
+      * un code à deux caractères dans la variable WS-FS
            FILE STATUS IS WS-FS.
 
        DATA DIVISION.
