@@ -1,5 +1,6 @@
       * SNIPPET FOR UNDERSTANDING TABLE IN COBOL
       * BINARY SEARCH IN COBOL
+      * COMPRENDRE LE TRI DE TABLEAU
        IDENTIFICATION DIVISION.
        PROGRAM-ID. TABLE-TEST8.
 
@@ -9,20 +10,25 @@
       * DE DONNEES QUI SONT DES ELEMENTS INDEPENDANTS 
        77 PEOPLE-SEARCH-DATA     PIC X(20).
        01 PEOPLE-SERIAL.
-           05 PEOPLE-NAME OCCURS 50 TIMES
+           05 PEOPLE-NAME PIC X(20) OCCURS 50 TIMES
            ASCENDING KEY IS PEOPLE-NAME
-           INDEXED BY PL-IDX PIC X(20).
+           INDEXED BY PL-IDX .
+           05 PL-FLAG        PIC X(01).
+              88 SEARCH-DONE     VALUE 'O'.
+              88 SEARCH-NDONE    VALUE 'N'.
 
       * Variables de travail pour le tri
        01  WS-VARIABLES-TRI.
            05 WS-TEMP-NOM         PIC X(30).
-           05 WS-MAX-ELEMENTS     PIC 9(02) VALUE 10.
+           05 WS-MAX-ELEMENTS     PIC 9(02) VALUE 50.
            05 WS-I                PIC 9(02).
            05 WS-J                PIC 9(02).
            05 WS-J-PLUS-1         PIC 9(02).
            05 WS-SWAP-FLAG        PIC X(01).
+      * METTRE UN RAPPEL DE 88
               88 TABLEAU-TRIE     VALUE 'O'.
               88 PAS-ENCORE-TRIE  VALUE 'N'.
+
          
        PROCEDURE DIVISION.
       * MOVE EST INUTILE NOUS ALLON TRIER LES DONNEES
@@ -32,25 +38,34 @@
       * MOVE POUR LES DONNEES
            MOVE "TITI" TO PEOPLE-NAME(1).
            MOVE "TOTO" TO PEOPLE-NAME(2).
-           MOVE  "TOTO" TO PEOPLE-SEARCH-DATA.
+           MOVE "TOTO" TO PEOPLE-NAME(3).
+           MOVE "TATA" TO PEOPLE-NAME(4).
+           MOVE "TOTO" TO PEOPLE-SEARCH-DATA.
       * ON APPEL ICI L OPERATION DE TRIAGE DE TABLEAU
            PERFORM TRIER-TABLEAU.
+           SET  SEARCH-DONE  TO  TRUE.
+           PERFORM UNTIL SEARCH-NDONE
+               SET  SEARCH-NDONE  TO  TRUE
+               SEARCH ALL PEOPLE-NAME
+               AT END DISPLAY "Not found"
+               WHEN PEOPLE-SEARCH-DATA = PEOPLE-NAME(PL-IDX)
+                     DISPLAY "Found"
+                     DISPLAY "INDEX :"
+                     DISPLAY PL-IDX
+                     DISPLAY "NOM :"
+                     DISPLAY PEOPLE-SEARCH-DATA
+                     DISPLAY  PEOPLE-NAME(PL-IDX)
+      * SALE TROUVER COMMENT MIEUX FAIRE
+                     MOVE " " TO PEOPLE-NAME(PL-IDX)
+                     SET SEARCH-DONE TO TRUE
 
-           SEARCH ALL PEOPLE-NAME
-           AT END DISPLAY "Not found"
-           WHEN PEOPLE-SEARCH-DATA = PEOPLE-NAME(PL-IDX)
-           DISPLAY "Found"
-           DISPLAY "INDEX :"
-           DISPLAY PL-IDX
-           DISPLAY "NOM :"
-           DISPLAY PEOPLE-SEARCH-DATA
-           DISPLAY  PEOPLE-NAME(PL-IDX).
+           END-PERFORM.
            STOP RUN.
 
        TRIER-TABLEAU.
            PERFORM VARYING WS-I FROM 1 BY 1 
                    UNTIL WS-I > WS-MAX-ELEMENTS - 1
-               
+      * QU EST CE QUE L ON PEUT PASSER EN BOOLEAN          
                SET TABLEAU-TRIE TO TRUE
                
                PERFORM VARYING WS-J FROM 1 BY 1 
