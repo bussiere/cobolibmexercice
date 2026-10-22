@@ -1,1 +1,4 @@
 cobol85-send.sh
+
+# Repertoires de build (tous niveaux)
+build/
