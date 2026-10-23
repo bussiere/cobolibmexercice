@@ -1,6 +1,3 @@
-      * SNIPPET FOR UNDERSTANDING INPUT DATA / FILE IN COBOL
-      * NOW SPLITTING AND EXTRACTING DATA
-      * SKILLS AND CARACS
        IDENTIFICATION DIVISION.
        PROGRAM-ID. TRAVELLER-SHEET.
        AUTHOR. BUSSIERE.
@@ -9,18 +6,8 @@
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
            SELECT CHAR-FILE ASSIGN TO "char_input1.txt"
-      * Lecture ligne par ligne du fichier
            ORGANIZATION IS LINE SEQUENTIAL
-      * Lecture du debut a la fin
            ACCESS MODE IS SEQUENTIAL
-      * Demande au système d'exploitation de renvoyer 
-      * un code à deux caractères dans la variable WS-FS
-      * 00 : Succès total
-      * 10 : Fin de fichier (EOF).
-      * 35 : Fichier introuvable.
-      * 39 : Conflit d'attributs. Le fichier existe, mais sa structure 
-      * réelle ne correspond pas 
-      * 42 : Fichier déjà ouvert.
            FILE STATUS IS WS-FS.
 
        DATA DIVISION.
@@ -35,15 +22,20 @@
 
        01  WS-COUNTER          PIC 9(2)        VALUE 1.
 
-      * --- NOUVELLES VARIABLES POUR LE SPLIT ---
-      * Pointeur pour indiquer où commencer la lecture dans la chaîne
+      * --- VARIABLES POUR LES DÉCOUPAGES ---
        01  WS-POINTER          PIC 9(3)        VALUE 1.
-      * Compteur du nombre réel de compétences extraites
        01  WS-SKILL-COUNT      PIC 9(2)        VALUE 0.
-      * Tableau fixe pour stocker jusqu'à 5 compétences
+       
+      * Chaîne temporaire pour stocker la compétence brute avant son sous-split
+       01  WS-TMP-SKILL        PIC X(20).
+       01  WS-SUB-POINTER      PIC 9(3).
+
+      * --- NOUVELLE STRUCTURE DU TABLEAU DE COMPÉTENCES ---
        01  WS-SKILLS-TABLE.
-           05 WS-SKILL-ITEM    PIC X(20) OCCURS 5 TIMES.
-      * Index pour la boucle d'affichage
+           05 WS-SKILL-ROW OCCURS 5 TIMES.
+               10 WS-SKILL-NAME    PIC X(15).
+               10 WS-SKILL-LEVEL   PIC 9.
+
        01  WS-IDX              PIC 9(2).
 
       * Structure de la fiche stockee en memoire
@@ -76,7 +68,7 @@
            PERFORM DISPLAY-SHEET
            STOP RUN.
 
-        PROCESS-LINE.
+       PROCESS-LINE.
            EVALUATE WS-COUNTER
                WHEN 1 MOVE CHAR-RECORD TO CHAR-NAME
                WHEN 2 MOVE CHAR-RECORD TO CHAR-CLASS
@@ -90,20 +82,46 @@
            ADD 1 TO WS-COUNTER.
 
        SPLIT-SKILLS.
-      * Initialisation du pointeur au début de la chaîne de caractères
            MOVE 1 TO WS-POINTER
+           MOVE 0 TO WS-SKILL-COUNT
            
-      * Découpage de la chaîne CHAR-SKILLS par les virgules
+      * 1. On sépare d'abord les blocs par les virgules dans des 
+      * variables temporaires
            UNSTRING CHAR-SKILLS DELIMITED BY ","
-               INTO WS-SKILL-ITEM(1)
-                    WS-SKILL-ITEM(2)
-                    WS-SKILL-ITEM(3)
-                    WS-SKILL-ITEM(4)
-                    WS-SKILL-ITEM(5)
+               INTO WS-SKILL-ROW(1)
+                    WS-SKILL-ROW(2)
+                    WS-SKILL-ROW(3)
+                    WS-SKILL-ROW(4)
+                    WS-SKILL-ROW(5)
                WITH POINTER WS-POINTER
                TALLYING IN WS-SKILL-COUNT
            END-UNSTRING.
 
+      * 2. On boucle sur le nombre d'éléments trouvés pour 
+      * séparer le Nom et le Niveau
+           PERFORM VARYING WS-IDX FROM 1 BY 1 
+                   UNTIL WS-IDX > WS-SKILL-COUNT
+               
+      *        Sauvegarde et nettoyage des espaces initiaux 
+      * (ex: " Gunnery-1" -> "Gunnery-1")
+               MOVE WS-SKILL-ROW(WS-IDX) TO WS-TMP-SKILL
+               INSPECT WS-TMP-SKILL TALLYING WS-SUB-POINTER 
+                       FOR LEADING SPACES
+               
+      * Réinitialisation de la ligne du tableau avant 
+      * extraction propre
+      * INITIALIZE REMPLACE PAR LES VALEURS PAR DEFAUT SELON LE TYPE
+      * DES ESPACES POUR DU TEXT ET 0 POUR DES VALEURS
+               INITIALIZE WS-SKILL-ROW(WS-IDX)
+               MOVE 1 TO WS-SUB-POINTER
+               
+      *        Découpage par le tiret "-"
+               UNSTRING WS-TMP-SKILL DELIMITED BY "-"
+                   INTO WS-SKILL-NAME(WS-IDX)
+                        WS-SKILL-LEVEL(WS-IDX)
+                   WITH POINTER WS-SUB-POINTER
+               END-UNSTRING
+           END-PERFORM.
 
        DISPLAY-SHEET.
            DISPLAY "========================================"
@@ -115,12 +133,13 @@
            DISPLAY "UWP         : " CHAR-UWP
            DISPLAY "Credits     : " CHAR-CREDITS " Cr"
            DISPLAY "----------------------------------------"
-           DISPLAY "Liste des Competences splitees :"
+           DISPLAY "Liste des Competences decoulées :"
            
-           PERFORM VARYING WS-IDX FROM 1 BY 1 UNTIL WS-IDX > 5
-               IF WS-SKILL-ITEM(WS-IDX) NOT = SPACES
-                   DISPLAY "  - " WS-SKILL-ITEM(WS-IDX)
-               END-IF
+           PERFORM VARYING WS-IDX FROM 1 BY 1 
+                   UNTIL WS-IDX > WS-SKILL-COUNT
+               DISPLAY "  - Nom : " WS-SKILL-NAME(WS-IDX)
+                       " | Niveau : " WS-SKILL-LEVEL(WS-IDX)
            END-PERFORM
+           
+           DISPLAY "NB COMPETENCE(S) : "  WS-SKILL-COUNT
            DISPLAY "========================================".
-
