@@ -21,7 +21,6 @@
       * 39 : Conflit d'attributs. Le fichier existe, mais sa structure 
       * réelle ne correspond pas 
       * 42 : Fichier déjà ouvert.
-      
            FILE STATUS IS WS-FS.
 
        DATA DIVISION.
@@ -35,6 +34,17 @@
            88  EOF-REACHED                     VALUE "Y".
 
        01  WS-COUNTER          PIC 9(2)        VALUE 1.
+
+      * --- NOUVELLES VARIABLES POUR LE SPLIT ---
+      * Pointeur pour indiquer où commencer la lecture dans la chaîne
+       01  WS-POINTER          PIC 9(3)        VALUE 1.
+      * Compteur du nombre réel de compétences extraites
+       01  WS-SKILL-COUNT      PIC 9(2)        VALUE 0.
+      * Tableau fixe pour stocker jusqu'à 5 compétences
+       01  WS-SKILLS-TABLE.
+           05 WS-SKILL-ITEM    PIC X(20) OCCURS 5 TIMES.
+      * Index pour la boucle d'affichage
+       01  WS-IDX              PIC 9(2).
 
       * Structure de la fiche stockee en memoire
        01  CHARACTER-SHEET.
@@ -66,17 +76,34 @@
            PERFORM DISPLAY-SHEET
            STOP RUN.
 
-       PROCESS-LINE.
-      * Assigne la ligne lue au bon champ selon le compteur de ligne
+        PROCESS-LINE.
            EVALUATE WS-COUNTER
                WHEN 1 MOVE CHAR-RECORD TO CHAR-NAME
                WHEN 2 MOVE CHAR-RECORD TO CHAR-CLASS
                WHEN 3 MOVE CHAR-RECORD TO CHAR-TERMS
                WHEN 4 MOVE CHAR-RECORD TO CHAR-UWP
                WHEN 5 MOVE CHAR-RECORD TO CHAR-CREDITS
-               WHEN 6 MOVE CHAR-RECORD TO CHAR-SKILLS
+               WHEN 6 
+                   MOVE CHAR-RECORD TO CHAR-SKILLS
+                   PERFORM SPLIT-SKILLS
            END-EVALUATE
            ADD 1 TO WS-COUNTER.
+
+       SPLIT-SKILLS.
+      * Initialisation du pointeur au début de la chaîne de caractères
+           MOVE 1 TO WS-POINTER
+           
+      * Découpage de la chaîne CHAR-SKILLS par les virgules
+           UNSTRING CHAR-SKILLS DELIMITED BY ","
+               INTO WS-SKILL-ITEM(1)
+                    WS-SKILL-ITEM(2)
+                    WS-SKILL-ITEM(3)
+                    WS-SKILL-ITEM(4)
+                    WS-SKILL-ITEM(5)
+               WITH POINTER WS-POINTER
+               TALLYING IN WS-SKILL-COUNT
+           END-UNSTRING.
+
 
        DISPLAY-SHEET.
            DISPLAY "========================================"
@@ -87,5 +114,13 @@
            DISPLAY "Mandats (n) : " CHAR-TERMS
            DISPLAY "UWP         : " CHAR-UWP
            DISPLAY "Credits     : " CHAR-CREDITS " Cr"
-           DISPLAY "Competences : " CHAR-SKILLS
+           DISPLAY "----------------------------------------"
+           DISPLAY "Liste des Competences splitees :"
+           
+           PERFORM VARYING WS-IDX FROM 1 BY 1 UNTIL WS-IDX > 5
+               IF WS-SKILL-ITEM(WS-IDX) NOT = SPACES
+                   DISPLAY "  - " WS-SKILL-ITEM(WS-IDX)
+               END-IF
+           END-PERFORM
            DISPLAY "========================================".
+

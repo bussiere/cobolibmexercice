@@ -14,6 +14,12 @@
            ACCESS MODE IS SEQUENTIAL
       * Demande au système d'exploitation de renvoyer 
       * un code à deux caractères dans la variable WS-FS
+      * 00 : Succès total
+      * 10 : Fin de fichier (EOF).
+      * 35 : Fichier introuvable.
+      * 39 : Conflit d'attributs. Le fichier existe, mais sa structure 
+      * réelle ne correspond pas 
+      * 42 : Fichier déjà ouvert.
            FILE STATUS IS WS-FS.
 
        DATA DIVISION.
