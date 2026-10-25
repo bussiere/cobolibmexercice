@@ -9,6 +9,7 @@ compilés et exécutés avec GnuCOBOL, en local ou dans un pod Podman.
 |-------------------------|------------------------------------------------------|
 | `cobol85.sh`            | Compile et exécute avec le `cobc` local              |
 | `cobol85.cmd`           | Idem sous Windows (cmd), avec `-i`                   |
+| `cobol85-fixenv.cmd`    | Configure l'environnement GnuCOBOL sous Windows      |
 | `cobol85-podman.sh`     | Compile et exécute dans un pod Podman (GnuCOBOL)     |
 | `cobol85-export.sh`     | Exporte l'image en fichier plat `.7z`                |
 | `cobol85-import.sh`     | Importe un fichier plat `.7z` comme image            |
@@ -22,6 +23,8 @@ Les exécutables vont dans `build/`, à côté du source.
 ## Prérequis
 
 - Local : GnuCOBOL (`cobc`).
+- Windows : GnuCOBOL pour Windows (build MinGW), dans le `PATH` ou
+  installé à un emplacement habituel (voir `cobol85-fixenv.cmd`).
 - Pod : Podman. Pour import/export : `7z` (paquet `p7zip-full`).
 
 ## cobol85.sh (local)
@@ -33,15 +36,15 @@ Les exécutables vont dans `build/`, à côté du source.
 
 ## cobol85.cmd (Windows)
 
-Même rôle que `cobol85.sh`, pour GnuCOBOL installé sous Windows
-(`cobc` dans le `PATH` : lancer d'abord le `set_env.cmd` de GnuCOBOL).
+Même rôle que `cobol85.sh`, pour GnuCOBOL installé sous Windows.
 Accepte aussi `-i source[:nom]` comme `cobol85-podman.sh` :
 
 ```bat
 cobol85.cmd snippet\table\tabsni11.cbl
 cobol85.cmd prog.cbl arg1 arg2
+cobol85.cmd -i C:\data\clients.txt:CLIENTS prog.cbl
 cd snippet\inputextern
-..\..\cobol85.cmd -i C:\data\perso2.txt:char_input1.txt inpsni1.cbl
+..\..\cobol85.cmd -i char_input1.txt inpsni1.cbl   :: = build_run.cmd
 ```
 
 Différences avec la version pod :
@@ -52,6 +55,33 @@ Différences avec la version pod :
   le script refuse plutôt que de l'écraser.
 - Le programme s'exécute dans le dossier du `.cbl`.
 - Exécutable : `build\<nom>.exe`.
+
+Conséquence pour `snippet\inputextern` : `char_input1.txt` est déjà à
+côté des `.cbl`, donc `-i autre.txt:char_input1.txt` y est refusé.
+Pour essayer une autre donnée, copier le `.cbl` dans un autre dossier
+(ou utiliser la version pod, qui masque le fichier sans l'écraser).
+
+### Environnement GnuCOBOL (`cobol85-fixenv.cmd`)
+
+Le `cobc` MinGW cherche sa configuration dans son chemin de compilation
+(`/mingw/...`) si `COB_CONFIG_DIR` n'est pas défini, d'où l'erreur :
+
+```
+configuration error:
+/mingw/share/gnucobol/config\cobol85.conf: No such file or directory
+```
+
+`cobol85.cmd` appelle donc `cobol85-fixenv.cmd` quand `COB_CONFIG_DIR`
+est absent : inutile de lancer `set_env.cmd` à la main. Le script
+retrouve l'installation (dossier donné en argument, sinon `cobc` du
+`PATH`, sinon `C:\GnuCOBOL`, `%ProgramFiles%\GnuCOBOL`...) et définit
+les variables `COB_*`. Utilisable seul :
+
+```bat
+cobol85-fixenv.cmd                       :: fenêtre courante seulement
+cobol85-fixenv.cmd C:\GnuCOBOL           :: dossier explicite
+cobol85-fixenv.cmd C:\GnuCOBOL /persist  :: + prochaines fenêtres (setx)
+```
 
 ## cobol85-podman.sh (pod)
 
@@ -79,7 +109,7 @@ Options de compilation : `-x -fstack-check -std=cobol85 -fixed -Wall`.
 Un programme COBOL lit un fichier par son `SELECT ... ASSIGN TO` :
 
 ```cobol
-SELECT CHAR-FILE ASSIGN TO "char_input.txt"
+SELECT CHAR-FILE ASSIGN TO "char_input1.txt"
 ```
 
 L'option `-i source[:nom]` fournit ce fichier au programme :
@@ -91,11 +121,11 @@ L'option `-i source[:nom]` fournit ce fichier au programme :
 - Les `-i` se placent **avant** le `.cbl`.
 
 Exemple avec `snippet/inputextern/inpsni1.cbl` : le programme lit
-`char_input.txt`, la donnée s'appelle `char_input1.txt`.
+`char_input1.txt`, la donnée porte déjà ce nom (c'est `build_run.sh`).
 
 ```sh
 cd snippet/inputextern
-../../cobol85-podman.sh -i char_input1.txt:char_input.txt inpsni1.cbl
+../../cobol85-podman.sh -i char_input1.txt inpsni1.cbl
 ```
 
 Sortie :
@@ -118,11 +148,12 @@ Autres cas :
 
 ```sh
 # Donnée ailleurs sur le disque
-./cobol85-podman.sh -i ~/data/perso2.txt:char_input.txt \
+# (masque le char_input1.txt du dossier le temps de l'exécution)
+./cobol85-podman.sh -i ~/data/perso2.txt:char_input1.txt \
     snippet/inputextern/inpsni1.cbl
 
 # Nom déjà identique au ASSIGN TO : ":nom" inutile
-./cobol85-podman.sh -i /tmp/char_input.txt snippet/inputextern/inpsni1.cbl
+./cobol85-podman.sh -i /tmp/char_input1.txt snippet/inputextern/inpsni1.cbl
 
 # Plusieurs fichiers d'entrée
 ./cobol85-podman.sh -i clients.txt:CLIENTS -i tarifs.dat prog.cbl
