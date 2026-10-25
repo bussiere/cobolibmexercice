@@ -12,6 +12,7 @@ rem Le programme s'execute dans le dossier du .cbl (comme dans le pod).
 rem Necessite GnuCOBOL (cobc) dans le PATH (set_env.cmd de GnuCOBOL).
 setlocal EnableExtensions EnableDelayedExpansion
 
+set "script_dir=%~dp0"
 set "n_in=0"
 set "n_tmp=0"
 set "pushed="
@@ -60,6 +61,8 @@ shift
 goto collect_args
 :args_done
 
+rem Sans COB_CONFIG_DIR, cobc cherche sa config sous /mingw/... : erreur
+if not defined COB_CONFIG_DIR call "%script_dir%cobol85-fixenv.cmd"
 where cobc >nul 2>&1
 if errorlevel 1 (
     echo Erreur: cobc GnuCOBOL introuvable, lancer set_env.cmd de GnuCOBOL 1>&2
