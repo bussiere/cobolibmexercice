@@ -8,6 +8,7 @@ compilés et exécutés avec GnuCOBOL, en local ou dans un pod Podman.
 | Chemin                  | Contenu                                              |
 |-------------------------|------------------------------------------------------|
 | `cobol85.sh`            | Compile et exécute avec le `cobc` local              |
+| `cobol85.cmd`           | Idem sous Windows (cmd), avec `-i`                   |
 | `cobol85-podman.sh`     | Compile et exécute dans un pod Podman (GnuCOBOL)     |
 | `cobol85-export.sh`     | Exporte l'image en fichier plat `.7z`                |
 | `cobol85-import.sh`     | Importe un fichier plat `.7z` comme image            |
@@ -29,6 +30,28 @@ Les exécutables vont dans `build/`, à côté du source.
 ./cobol85.sh snippet/table/tabsni11.cbl
 ./cobol85.sh prog.cbl arg1 arg2      # arguments passés au programme
 ```
+
+## cobol85.cmd (Windows)
+
+Même rôle que `cobol85.sh`, pour GnuCOBOL installé sous Windows
+(`cobc` dans le `PATH` : lancer d'abord le `set_env.cmd` de GnuCOBOL).
+Accepte aussi `-i source[:nom]` comme `cobol85-podman.sh` :
+
+```bat
+cobol85.cmd snippet\table\tabsni11.cbl
+cobol85.cmd prog.cbl arg1 arg2
+cd snippet\inputextern
+..\..\cobol85.cmd -i C:\data\perso2.txt:char_input1.txt inpsni1.cbl
+```
+
+Différences avec la version pod :
+
+- Pas de montage : l'entrée est **copiée** dans le dossier du `.cbl`
+  sous `nom`, puis supprimée en fin d'exécution.
+- Si un fichier `nom` existe déjà à cet endroit (autre que la source),
+  le script refuse plutôt que de l'écraser.
+- Le programme s'exécute dans le dossier du `.cbl`.
+- Exécutable : `build\<nom>.exe`.
 
 ## cobol85-podman.sh (pod)
 
