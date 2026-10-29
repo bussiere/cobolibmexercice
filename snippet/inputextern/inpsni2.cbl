@@ -32,6 +32,7 @@
 
       * --- NOUVELLE STRUCTURE DU TABLEAU DE COMPÉTENCES ---
        01  WS-SKILLS-TABLE.
+      * WS-SKILL-ROW est une ligne de 16 slots (15 char + 1 num)
            05 WS-SKILL-ROW OCCURS 5 TIMES.
                10 WS-SKILL-NAME    PIC X(15).
                10 WS-SKILL-LEVEL   PIC 9.
@@ -87,15 +88,19 @@
            
       * 1. On sépare d'abord les blocs par les virgules dans des 
       * variables temporaires
+      * CASSE GUEULE COMME SYSTEME
            UNSTRING CHAR-SKILLS DELIMITED BY ","
                INTO WS-SKILL-ROW(1)
                     WS-SKILL-ROW(2)
                     WS-SKILL-ROW(3)
                     WS-SKILL-ROW(4)
                     WS-SKILL-ROW(5)
+      * Le pointeur sert a dire ou l'on est sur la ligne de data
                WITH POINTER WS-POINTER
                TALLYING IN WS-SKILL-COUNT
            END-UNSTRING.
+           DISPLAY "SKILLS DEBUG"
+           DISPLAY  WS-SKILL-ROW(1).
 
       * 2. On boucle sur le nombre d'éléments trouvés pour 
       * séparer le Nom et le Niveau
