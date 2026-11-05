@@ -1,0 +1,35 @@
+      * SNIPPET FOR UNDERSTANDING TABLE IN COBOL
+      * COMPRENDRE LA MAGIE DE DONNEE DE TABLEAU ET DE SA LIGNE
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TABLE-TEST12.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+      * Variables de travail pour le test
+       01  TEST-LINE.
+           05 TEST-LINE-STRING         PIC X(30).
+           05 TEST-LINE-INTEGER      PIC 9(02) VALUE 50.
+
+       PROCEDURE DIVISION.
+           MOVE "TOTO" TO TEST-LINE-STRING.
+           MOVE 51 TO   TEST-LINE-INTEGER.
+
+           DISPLAY TEST-LINE-STRING.
+           DISPLAY TEST-LINE-INTEGER.
+           DISPLAY "TEST-LINE."
+           DISPLAY TEST-LINE.
+           DISPLAY "TEST-LINE MODIFIE"
+           MOVE "TITI" TO TEST-LINE.
+           DISPLAY TEST-LINE.
+           DISPLAY "TEST-LINE-STRING"
+           DISPLAY TEST-LINE-STRING.
+           DISPLAY "TEST-LINE-INTEGER"
+           DISPLAY TEST-LINE-INTEGER.
+           MOVE "TITI                          52                     " 
+           TO TEST-LINE.
+           DISPLAY "TEST-LINE WTF ?"
+           DISPLAY TEST-LINE.
+           DISPLAY "TEST-LINE-STRING"
+           DISPLAY TEST-LINE-STRING.
+           DISPLAY "TEST-LINE-INTEGER WTF DUDE ?"
+           DISPLAY TEST-LINE-INTEGER.
