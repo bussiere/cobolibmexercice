@@ -37,7 +37,7 @@
                UNTIL WS-IDX-SRC > FUNCTION LENGTH(WS-STR-ORIGINE).
                
            DISPLAY "Chaine nettoyee  : [" WS-STR-RESULTAT "]"
-           MOVE  WS-STR-RESULTAT TO WS-STR-ORIGINE.
+      *    MOVE  WS-STR-RESULTAT TO WS-STR-ORIGINE.
            PERFORM  200-TRIM-SPACE.
            
            STOP RUN.
@@ -71,10 +71,13 @@
 
       * On calcule la taille réelle du texte sans les espaces de fin
            COMPUTE WS-TAILLE-UTILE = 
-               FUNCTION LENGTH(WS-STR-SANS-GAUCHE) - WS-NB-ESPACES-FIN
+               FUNCTION LENGTH(WS-STR-SANS-GAUCHE) - WS-NB-ESPACES-DEBUT
 
       * --- ÉTAPE 3 : Extraction finale par modification de référence ---
-           MOVE WS-STR-SANS-GAUCHE(1:WS-TAILLE-UTILE) TO WS-STR-NETTOYEE
-
+      *    PIEGE NE PAS COLLER  WS-NB-ESPACES-DEBUT+1
+           MOVE WS-STR-SANS-GAUCHE(WS-NB-ESPACES-DEBUT + 1 : 
+           WS-TAILLE-UTILE) 
+           TO WS-STR-NETTOYEE
+           DISPLAY "TRIM".
            DISPLAY "[" WS-STR-NETTOYEE "]".
       * FINISHED 
