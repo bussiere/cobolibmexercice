@@ -7,10 +7,38 @@
        WORKING-STORAGE SECTION.
 
        01  WS-INTEGER   PIC 9(2) VALUE 42.
+       01  WS-A   PIC 9(2) VALUE 6.
+       01  WS-B   PIC 9(2) VALUE 2.
+       01  WS-RESULTAT   PIC 9(2) VALUE 0.
+       01  WS-NOMBRE      PIC 9(3) VALUE 5.
+       01  WS-DIVISEUR    PIC 9(2) VALUE 2.
+       01  WS-RESTE       PIC 9(2) VALUE 0.
        
        PROCEDURE DIVISION.
 
            COMPUTE WS-INTEGER = WS-INTEGER + 1.
 
            DISPLAY WS-INTEGER.
+
+           COMPUTE WS-INTEGER = WS-INTEGER / 2.
+
+           DISPLAY WS-INTEGER.
+
+           DIVIDE 2 INTO WS-INTEGER.
+
+           DISPLAY WS-INTEGER.
+
+           DIVIDE WS-A BY WS-B GIVING WS-RESULTAT.
+
+           DISPLAY WS-RESULTAT.
+
+           MOVE 2 TO WS-INTEGER.
+
+           COMPUTE WS-INTEGER = WS-INTEGER ** 3.
+
+           DISPLAY WS-INTEGER.
+           COMPUTE WS-RESTE = FUNCTION MOD(WS-NOMBRE, WS-DIVISEUR).
+
+           DISPLAY WS-RESTE.
            
+
