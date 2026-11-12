@@ -37,8 +37,22 @@
            COMPUTE WS-INTEGER = WS-INTEGER ** 3.
 
            DISPLAY WS-INTEGER.
+
+
            COMPUTE WS-RESTE = FUNCTION MOD(WS-NOMBRE, WS-DIVISEUR).
 
            DISPLAY WS-RESTE.
+
+
+           COMPUTE WS-POURCENTAGE ROUNDED = (WS-PARTIE * 100) / 
+           
+           WS-TOTAL.
+
+
+      *  ARRONDIS SUPERIEUR
+
+           COMPUTE WS-CEIL = - FUNCTION INTEGER(- WS-VALEUR).
+
+
            
 
